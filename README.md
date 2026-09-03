@@ -1,6 +1,6 @@
 # De Palethoeve Routeplanner
 
-Mobiele MVP voor planners en chauffeurs van maaltijdleveringen. De huidige versie bevat een dashboard met fictieve demo-data, CSV-import feedback, routeoverzicht, Google Maps-deeplink en chauffeursmodus.
+Mobiele MVP voor planners en chauffeurs van maaltijdleveringen. De huidige versie bevat een dashboard met fictieve demo-data, echte CSV/XLSX-import, routeoverzicht, Google Maps-deeplink en chauffeursmodus.
 
 ## Lokaal starten
 
@@ -13,12 +13,12 @@ Open daarna [http://localhost:3000](http://localhost:3000).
 
 ## Belangrijkste interacties
 
-- Klik op **Nieuwe route** om een CSV/Excel-bestand te kiezen.
+- Klik op **Nieuwe route** om een CSV/Excel-bestand te kiezen. Kolommen voor naam, adres, gemeente, maaltijden en opmerkingen worden flexibel herkend.
 - Klik op **Chauffeursmodus** om de mobiele flow te testen.
 - Gebruik **Geleverd** of **Overslaan**; de volgende actieve stop wordt automatisch gekozen.
 - **Navigeer** opent Google Maps met het huidige adres.
 
-De demo gebruikt uitsluitend fictieve klanten en adressen in de regio Brecht. Database, authenticatie, echte geocoding en route-optimalisatie zijn bewust als volgende backendlaag opengehouden.
+De demo gebruikt uitsluitend fictieve klanten en adressen in de regio Brecht. Database, authenticatie, echte geocoding en route-optimalisatie zijn bewust als volgende backendlaag opengehouden. Ontbrekende straat- of gemeentewaarden krijgen de status **Adres nakijken**.
 
 ## Server starten met Docker Compose
 
@@ -36,9 +36,19 @@ docker compose up -d --build
 docker compose ps
 ```
 
+Maak de eerste migration aan zodra PostgreSQL draait, en seed daarna de demo-data:
+
+```bash
+npm install
+npx prisma migrate dev --name init
+npm run db:seed
+```
+
+Commit de aangemaakte map `prisma/migrations` mee. Op volgende serverdeployments gebruik je `npx prisma migrate deploy` in plaats van `migrate dev`. Voor een server zonder Node.js kun je dit via een CI/CD-stap uitvoeren. De PostgreSQL-data blijft bewaard in de `postgres_data` Docker-volume.
+
 De app is dan beschikbaar op `http://SERVER-IP:3000`. Gebruik voor publiek verkeer een reverse proxy zoals Caddy of Nginx met HTTPS. Stoppen kan met `docker compose down`; logs bekijk je met `docker compose logs -f palethoeve`.
 
-De huidige MVP heeft geen database nodig om te starten. `DATABASE_URL` en `AUTH_SECRET` staan al in het voorbeeldbestand klaar voor de volgende backendfase.
+De huidige UI gebruikt de database nog niet rechtstreeks; het Prisma-schema en de PostgreSQL-service zijn nu voorbereid voor de volgende koppeling van login, routes en leveringsstatussen. `DATABASE_URL` en `AUTH_SECRET` staan al in het voorbeeldbestand klaar.
 
 ## Getting Started
 

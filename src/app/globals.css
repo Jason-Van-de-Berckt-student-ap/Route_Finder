@@ -429,6 +429,10 @@ nav {
   background: #fff0df;
   color: #c4792e;
 }
+.status-icon.address_error {
+  background: #fde4df;
+  color: #c95d48;
+}
 .status-icon.pending {
   border: 2px solid #d6dfd8;
 }
@@ -475,6 +479,9 @@ nav {
 }
 .status-label.skipped {
   color: #c4792e;
+}
+.status-label.address_error {
+  color: #c95d48;
 }
 .row-arrow {
   border: 0;
