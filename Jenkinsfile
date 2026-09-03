@@ -10,13 +10,18 @@ pipeline {
 
         stage('Voorbereiding') {
             steps {
-                sh 'touch .env.production'
+                sh '''
+                    if [ ! -s .env.production ]; then
+                        echo 'FOUT: .env.production ontbreekt of is leeg. Configureer DATABASE_URL, POSTGRES_PASSWORD, AUTH_SECRET en de initiële wachtwoorden als Jenkins credentials.'
+                        exit 1
+                    fi
+                '''
             }
         }
 
         stage('Bouwen') {
             steps {
-                sh 'docker compose build'
+                sh 'docker compose build --progress=plain'
             }
         }
 
