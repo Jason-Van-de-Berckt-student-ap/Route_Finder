@@ -23,18 +23,23 @@ De demo gebruikt uitsluitend fictieve klanten en adressen in de regio Brecht. Da
 ## Server starten met Docker Compose
 
 1. Installeer Docker Engine en de Docker Compose-plugin op de server.
-2. Maak een productieomgeving aan:
+2. Maak een productieomgeving aan op een persistente serverlocatie die niet door Jenkins wordt opgeschoond:
 
 ```bash
-cp .env.production.example .env.production
+sudo mkdir -p /opt/palethoeve
+sudo cp .env.production.example /opt/palethoeve/.env.production
+sudo chmod 600 /opt/palethoeve/.env.production
 ```
 
-Vul daarna eventuele provider-sleutels in. Start de app met:
+Vul daarna de secrets in en start de app met:
 
 ```bash
+export PALETHOEVE_ENV_FILE=/opt/palethoeve/.env.production
 docker compose up -d --build
 docker compose ps
 ```
+
+Configureer dezelfde `PALETHOEVE_ENV_FILE` als Jenkins environment variable. Het bestand staat dan buiten de checkout en blijft behouden wanneer Jenkins de workspace wist. Een Docker named volume kan niet rechtstreeks als Compose `env_file` worden gebruikt; Docker leest `env_file` al op de host voordat containers starten.
 
 Maak de eerste migration aan zodra PostgreSQL draait, en seed daarna de demo-data:
 

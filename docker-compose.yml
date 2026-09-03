@@ -1,10 +1,11 @@
 services:
   db:
     image: postgres:16-alpine
+    env_file:
+      - ${PALETHOEVE_ENV_FILE:-.env.production}
     environment:
       POSTGRES_DB: palethoeve
       POSTGRES_USER: palethoeve
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-in-production}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -20,7 +21,7 @@ services:
       dockerfile: Dockerfile
     image: palethoeve-routeplanner:latest
     env_file:
-      - .env.production
+      - ${PALETHOEVE_ENV_FILE:-.env.production}
     depends_on:
       db:
         condition: service_healthy

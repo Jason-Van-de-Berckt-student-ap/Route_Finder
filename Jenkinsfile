@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        PALETHOEVE_ENV_FILE = '/opt/palethoeve/.env.production'
+    }
+
     stages {
         stage('Docker Info') {
             steps {
@@ -11,8 +15,9 @@ pipeline {
         stage('Voorbereiding') {
             steps {
                 sh '''
-                    if [ ! -s .env.production ]; then
-                        echo 'FOUT: .env.production ontbreekt of is leeg. Configureer DATABASE_URL, POSTGRES_PASSWORD, AUTH_SECRET en de initiële wachtwoorden als Jenkins credentials.'
+                    ENV_FILE="${PALETHOEVE_ENV_FILE:-.env.production}"
+                    if [ ! -s "$ENV_FILE" ]; then
+                        echo "FOUT: $ENV_FILE ontbreekt of is leeg. Configureer PALETHOEVE_ENV_FILE naar een persistente serverlocatie en vul DATABASE_URL, POSTGRES_PASSWORD, AUTH_SECRET en de initiële wachtwoorden in."
                         exit 1
                     fi
                 '''
