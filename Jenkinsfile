@@ -2,32 +2,36 @@ pipeline {
     agent any
 
     options {
-        // Voorkom dubbele checkout en ruim de workspace op vóór de build start
         skipDefaultCheckout(false)
     }
 
     stages {
-        // Geen losse 'stage Checkout' met 'checkout scm' nodig; Jenkins doet dit al automatisch!
         stage('Docker Info') {
             steps {
-                echo 'Docker verbinding testen...'
+                echo 'Docker verbinding controleren...'
                 sh 'docker version'
+                sh 'docker compose version'
+            }
+        }
+
+        stage('Voorbereiding Environment') {
+            steps {
+                echo 'Controleren op .env.production...'
+                // Als .env.production niet bestaat, maak een leeg bestand aan zodat docker compose niet crasht
+                sh 'touch .env.production'
             }
         }
 
         stage('Docker Build') {
             steps {
-                echo 'Bouwen van het project...'
-                // Als je compose gebruikt:
+                echo 'Applicatie bouwen...'
                 sh 'docker compose build'
-                // Of als je een gewone Dockerfile gebruikt:
-                // sh 'docker build -t route_finder:latest .'
             }
         }
 
-        stage('Test run') {
+        stage('Test Run') {
             steps {
-                echo 'Opstarten testen...'
+                echo 'Containers testen...'
                 sh 'docker compose up -d'
                 sh 'docker compose ps'
             }
