@@ -20,6 +20,26 @@ Open daarna [http://localhost:3000](http://localhost:3000).
 
 De demo gebruikt uitsluitend fictieve klanten en adressen in de regio Brecht. Database, authenticatie, echte geocoding en route-optimalisatie zijn bewust als volgende backendlaag opengehouden.
 
+## Server starten met Docker Compose
+
+1. Installeer Docker Engine en de Docker Compose-plugin op de server.
+2. Maak een productieomgeving aan:
+
+```bash
+cp .env.production.example .env.production
+```
+
+Vul daarna eventuele provider-sleutels in. Start de app met:
+
+```bash
+docker compose up -d --build
+docker compose ps
+```
+
+De app is dan beschikbaar op `http://SERVER-IP:3000`. Gebruik voor publiek verkeer een reverse proxy zoals Caddy of Nginx met HTTPS. Stoppen kan met `docker compose down`; logs bekijk je met `docker compose logs -f palethoeve`.
+
+De huidige MVP heeft geen database nodig om te starten. `DATABASE_URL` en `AUTH_SECRET` staan al in het voorbeeldbestand klaar voor de volgende backendfase.
+
 ## Getting Started
 
 First, run the development server:

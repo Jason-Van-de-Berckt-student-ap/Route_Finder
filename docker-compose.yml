@@ -1,0 +1,26 @@
+services:
+  palethoeve:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: palethoeve-routeplanner:latest
+    env_file:
+      - .env.production
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    restart: unless-stopped
+    init: true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:3000/",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
