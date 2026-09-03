@@ -26,7 +26,7 @@ pipeline {
 
         stage('Bouwen') {
             steps {
-                sh 'docker compose build --progress=plain'
+                sh 'docker compose --env-file "$PALETHOEVE_ENV_FILE" build --progress=plain'
             }
         }
 
@@ -34,8 +34,8 @@ pipeline {
             steps {
                 echo 'Oude versie stoppen en nieuwe container starten op de host...'
                 // Stop de oude draaiende instantie en start de nieuw gebouwde versie op de achtergrond
-                sh 'docker compose down --remove-orphans || true'
-                sh 'docker compose up -d'
+                sh 'docker compose --env-file "$PALETHOEVE_ENV_FILE" down --remove-orphans || true'
+                sh 'docker compose --env-file "$PALETHOEVE_ENV_FILE" up -d'
             }
         }
     }

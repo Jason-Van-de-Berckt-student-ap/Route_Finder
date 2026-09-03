@@ -39,7 +39,7 @@ docker compose up -d --build
 docker compose ps
 ```
 
-Configureer dezelfde `PALETHOEVE_ENV_FILE` als Jenkins environment variable. Het bestand staat dan buiten de checkout en blijft behouden wanneer Jenkins de workspace wist. Een Docker named volume kan niet rechtstreeks als Compose `env_file` worden gebruikt; Docker leest `env_file` al op de host voordat containers starten.
+Configureer dezelfde `PALETHOEVE_ENV_FILE` als Jenkins environment variable. De pipeline gebruikt standaard `/opt/palethoeve/.env.production`. Het bestand staat dan buiten de checkout en blijft behouden wanneer Jenkins de workspace wist. Een Docker named volume kan niet rechtstreeks als Compose `env_file` worden gebruikt; Docker leest `env_file` al op de host voordat containers starten.
 
 Maak de eerste migration aan zodra PostgreSQL draait, en seed daarna de demo-data:
 
