@@ -1,11 +1,23 @@
 pipeline {
     agent any
 
+    options {
+        disableConcurrentBuilds()
+        skipDefaultCheckout(true)
+    }
+
     environment {
         PALETHOEVE_ENV_FILE = '/opt/palethoeve/.env.production'
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                deleteDir()
+                checkout scm
+            }
+        }
+
         stage('Docker Info') {
             steps {
                 sh 'docker version'
