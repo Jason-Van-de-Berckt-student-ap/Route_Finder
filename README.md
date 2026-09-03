@@ -1,4 +1,24 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# De Palethoeve Routeplanner
+
+Mobiele MVP voor planners en chauffeurs van maaltijdleveringen. De huidige versie bevat een dashboard met fictieve demo-data, CSV-import feedback, routeoverzicht, Google Maps-deeplink en chauffeursmodus.
+
+## Lokaal starten
+
+```bash
+npm install
+npm run dev
+```
+
+Open daarna [http://localhost:3000](http://localhost:3000).
+
+## Belangrijkste interacties
+
+- Klik op **Nieuwe route** om een CSV/Excel-bestand te kiezen.
+- Klik op **Chauffeursmodus** om de mobiele flow te testen.
+- Gebruik **Geleverd** of **Overslaan**; de volgende actieve stop wordt automatisch gekozen.
+- **Navigeer** opent Google Maps met het huidige adres.
+
+De demo gebruikt uitsluitend fictieve klanten en adressen in de regio Brecht. Database, authenticatie, echte geocoding en route-optimalisatie zijn bewust als volgende backendlaag opengehouden.
 
 ## Getting Started
 
