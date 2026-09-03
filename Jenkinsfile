@@ -1,35 +1,45 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = "route-finder"
+    options {
+        // Voorkom dubbele checkout en ruim de workspace op vóór de build start
+        skipDefaultCheckout(false)
     }
 
     stages {
-        stage('Checkout') {
+        // Geen losse 'stage Checkout' met 'checkout scm' nodig; Jenkins doet dit al automatisch!
+        stage('Docker Info') {
             steps {
-                echo 'Code ophalen...'
-                checkout scm
+                echo 'Docker verbinding testen...'
+                sh 'docker version'
             }
         }
+
         stage('Docker Build') {
             steps {
-                echo 'Docker container bouwen...'
-                sh "docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} ."
+                echo 'Bouwen van het project...'
+                // Als je compose gebruikt:
+                sh 'docker compose build'
+                // Of als je een gewone Dockerfile gebruikt:
+                // sh 'docker build -t route_finder:latest .'
             }
         }
-        stage('Test Run') {
+
+        stage('Test run') {
             steps {
-                echo 'Testen of de container start...'
-                sh "docker run --rm -d --name rf_test_${BUILD_NUMBER} ${IMAGE_NAME}:${BUILD_NUMBER}"
-                sh "docker ps | grep rf_test_${BUILD_NUMBER}"
+                echo 'Opstarten testen...'
+                sh 'docker compose up -d'
+                sh 'docker compose ps'
             }
         }
     }
+
     post {
         always {
-            sh "docker stop rf_test_${BUILD_NUMBER} || true"
-            sh "docker rmi ${IMAGE_NAME}:${BUILD_NUMBER} || true"
+            // Voer alleen uit als de workspace daadwerkelijk bestaat
+            node('built-in') {
+                sh 'docker compose down --volumes --remove-orphans || true'
+            }
         }
     }
 }
