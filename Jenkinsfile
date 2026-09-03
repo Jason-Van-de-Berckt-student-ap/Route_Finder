@@ -36,10 +36,7 @@ pipeline {
 
     post {
         always {
-            // Voer alleen uit als de workspace daadwerkelijk bestaat
-            node('built-in') {
-                sh 'docker compose down --volumes --remove-orphans || true'
-            }
+            sh 'docker compose down --volumes --remove-orphans || true'
         }
     }
 }
