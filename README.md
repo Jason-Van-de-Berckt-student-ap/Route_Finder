@@ -50,6 +50,10 @@ De app is dan beschikbaar op `http://SERVER-IP:3000`. Gebruik voor publiek verke
 
 De huidige UI gebruikt de database nog niet rechtstreeks; het Prisma-schema en de PostgreSQL-service zijn nu voorbereid voor de volgende koppeling van login, routes en leveringsstatussen. `DATABASE_URL` en `AUTH_SECRET` staan al in het voorbeeldbestand klaar.
 
+## Eerste gebruikers
+
+De seed maakt `jason` aan als `DRIVER` en `admin` als `ADMIN`. Stel `INITIAL_JASON_PASSWORD` en `INITIAL_ADMIN_PASSWORD` in vóór het seeden. Beide accounts moeten na de eerste login een nieuw wachtwoord van minstens 12 tekens kiezen. Gebruik de voorbeeldwachtwoorden alleen lokaal en vervang ze op een server.
+
 ## Getting Started
 
 First, run the development server:

@@ -1,4 +1,5 @@
 import { DeliveryStatus, PrismaClient, UserRole } from "@prisma/client";
+import { hash } from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -21,15 +22,17 @@ const customers = [
 ] as const;
 
 async function main() {
+    const jasonPassword = process.env.INITIAL_JASON_PASSWORD ?? "ChangeMe-Jason-2026!";
+    const adminPassword = process.env.INITIAL_ADMIN_PASSWORD ?? "ChangeMe-Admin-2026!";
     const driver = await prisma.user.upsert({
-        where: { email: "chauffeur@palethoeve.local" },
-        update: {},
-        create: { name: "Tom Peeters", email: "chauffeur@palethoeve.local", passwordHash: "demo-only", role: UserRole.DRIVER },
+        where: { username: "jason" },
+        update: { passwordHash: await hash(jasonPassword, 12), mustChangePassword: true },
+        create: { name: "Jason", username: "jason", email: "jason@palethoeve.local", passwordHash: await hash(jasonPassword, 12), role: UserRole.DRIVER, mustChangePassword: true },
     });
     await prisma.user.upsert({
-        where: { email: "admin@palethoeve.local" },
-        update: {},
-        create: { name: "Els Verhoeven", email: "admin@palethoeve.local", passwordHash: "demo-only", role: UserRole.ADMIN },
+        where: { username: "admin" },
+        update: { passwordHash: await hash(adminPassword, 12), mustChangePassword: true },
+        create: { name: "Administrator", username: "admin", email: "admin@palethoeve.local", passwordHash: await hash(adminPassword, 12), role: UserRole.ADMIN, mustChangePassword: true },
     });
     const route = await prisma.route.create({ data: { name: "Route 1", routeDate: new Date(), startAddress: "De Palethoeve, Brecht", assignedDriverId: driver.id, estimatedKm: 38.4, estimatedMins: 78 } });
     for (const [index, [name, street, houseNumber, postalCode, city]] of customers.entries()) {

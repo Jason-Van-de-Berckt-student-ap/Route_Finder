@@ -23,12 +23,27 @@ enum DeliveryStatus {
 model User {
   id           String   @id @default(cuid())
   name         String
+  username     String   @unique
   email        String   @unique
   passwordHash String
   role         UserRole @default(DRIVER)
+  mustChangePassword Boolean @default(true)
   routes       Route[]  @relation("AssignedRoutes")
+  sessions     Session[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model Customer {
