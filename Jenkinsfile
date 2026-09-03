@@ -1,46 +1,33 @@
 pipeline {
     agent any
 
-    options {
-        skipDefaultCheckout(false)
-    }
-
     stages {
         stage('Docker Info') {
             steps {
-                echo 'Docker verbinding controleren...'
                 sh 'docker version'
-                sh 'docker compose version'
             }
         }
 
-        stage('Voorbereiding Environment') {
+        stage('Voorbereiding') {
             steps {
-                echo 'Controleren op .env.production...'
-                // Als .env.production niet bestaat, maak een leeg bestand aan zodat docker compose niet crasht
                 sh 'touch .env.production'
             }
         }
 
-        stage('Docker Build') {
+        stage('Bouwen') {
             steps {
-                echo 'Applicatie bouwen...'
                 sh 'docker compose build'
             }
         }
 
-        stage('Test Run') {
+        stage('Deploy op Host') {
             steps {
-                echo 'Containers testen...'
+                echo 'Oude versie stoppen en nieuwe container starten op de host...'
+                // Stop de oude draaiende instantie en start de nieuw gebouwde versie op de achtergrond
+                sh 'docker compose down --remove-orphans || true'
                 sh 'docker compose up -d'
-                sh 'docker compose ps'
             }
         }
     }
-
-    post {
-        always {
-            sh 'docker compose down --volumes --remove-orphans || true'
-        }
-    }
+    // Geen 'docker compose down' in post: de container blijft nu permanent draaien op je host!
 }
